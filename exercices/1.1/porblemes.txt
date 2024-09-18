@@ -1,0 +1,3 @@
+npm run start => safare affiche "Cannot GET /"
+a quoi servent tous ces fichier ?
+a quoi sert "npm run dev"
