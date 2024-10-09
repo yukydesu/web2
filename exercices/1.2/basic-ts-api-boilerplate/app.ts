@@ -8,4 +8,13 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/film", filmRouter);
 
+
+let counter: number = 0; // Initialise le compteur à 0
+// Définir la route pour l'index du site
+app.get("/", (_, res) => {
+    counter++;
+    console.log(`GET / : ${counter}`);
+    res.send("Hello World");
+});
+
 export default app;

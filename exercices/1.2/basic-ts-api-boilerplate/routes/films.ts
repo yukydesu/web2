@@ -47,7 +47,7 @@ const films: Films[] = [
 
 router.get("/", (_req, res) => {
   counter++;
-  console.log(`GET counter : ${counter}`);
+  console.log(`GET /film : ${counter}`);
   return res.json(films);
 });
 
