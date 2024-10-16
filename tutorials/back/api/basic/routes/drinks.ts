@@ -1,6 +1,7 @@
-import { Router } from "express";
-import { Drink } from "../types";
+import { Router } from "express"; // import the Router object from express
+import { Drink } from "../types"; // import the Drink type from types.ts
 
+// Define an array of drinks
 const drinks: Drink[] = [
   {
     id: 1,
@@ -44,10 +45,77 @@ const drinks: Drink[] = [
   },
 ];
 
-const router = Router();
+const router = Router(); // create a new router
 
-router.get("/", (_req, res) => {
-  return res.json(drinks);
+
+// GET /drinks => get all drinks
+router.get("/", (req, res) => {  // GET /drinks
+  if (!req.query["budget-max"]) { // if there is no budget-max query parameter, exemple : req.query => { "budget-max": "5" }
+    // Cannot call req.query.budget-max as "-" is an operator
+    // req.query est un objet qui contient les paramètres de la requête
+    // le parametre "budget-max" est accessible via req.query["budget-max"] et non pas req.query.budget-max !
+    return res.json(drinks); // return all drinks
+  }
+  // si il y a un paramètre budget-max
+  const budgetMax: number = Number(req.query["budget-max"]); // convert the budget-max to a number
+  const filteredDrinks: Drink[] = drinks.filter((drink) => drink.price <= budgetMax); // filtre les boissons dont le prix est inférieur ou égal au budget-max
+      // drinks.filter() sert a filtrer le tableau drinks, 
+    // renvoie un nouveau tableau avec les éléments qui passent le filtre
+    // le filtre est une fonction qui prend un argument (drink) et retourne un booléen, 
+    // si le booléen est true, l'élément est gardé, sinon il est supprimé, par exemple : si budgetMax = 5, drink.price = 2.5 => true
+  return res.json(filteredDrinks); // return the filtered drinks
 });
 
-export default router;
+// GET /drinks/:id => get a drink by id 
+router.get("/:id", (req, res) => { // req.params.id => "1"  
+  const id = Number(req.params.id); // convert the id to a number ; "1" => 1
+  const drink = drinks.find((drink) => drink.id === id);  // { id: 1, title: "Coca-Cola", ... }
+  if (!drink) { // if drink is ndefined 
+    return res.sendStatus(404); // 404 Not Found
+  }
+  return res.json(drink); // return the drink as a JSON response
+});
+
+// POST /drinks => create a new drink
+router.post("/", (req, res) => { // Route pour créer une nouvelle boisson
+  const body: unknown = req.body; // Récupère le corps de la requête
+  // Validation des données du corps
+  if (
+    !body ||
+    typeof body !== "object" || // Vérifie que le corps est un objet
+    !("title" in body) || // Vérifie que le titre est présent
+    !("image" in body) || // Vérifie que l'image est présente
+    !("volume" in body) || // Vérifie que le volume est présent
+    !("price" in body) || // Vérifie que le prix est présent
+    typeof body.title !== "string" || // Vérifie que le titre est une chaîne
+    typeof body.image !== "string" || // Vérifie que l'image est une chaîne
+    typeof body.volume !== "number" || // Vérifie que le volume est un nombre
+    typeof body.price !== "number" || // Vérifie que le prix est un nombre
+    !body.title.trim() || // Vérifie que le titre n'est pas vide
+    !body.image.trim() || // Vérifie que l'image n'est pas vide
+    body.volume <= 0 || // Vérifie que le volume est positif
+    body.price <= 0 // Vérifie que le prix est positif
+  ) {
+    return res.sendStatus(400); // Renvoie un statut 400 Bad Request si une des validations échoue
+  }
+
+  const { title, image, volume, price } = body as Drink; // Déstructure les données de la boisson du corps de la requête
+
+  // Génère le prochain ID pour la nouvelle boisson
+  const nextId =
+    drinks.reduce((maxId, drink) => (drink.id > maxId ? drink.id : maxId), 0) + 1; // Trouve le plus grand ID dans le tableau et ajoute 1
+
+  const newDrink: Drink = { // Crée un objet pour la nouvelle boisson
+    id: nextId, // Assigne le nouvel ID
+    title, // Assigne le titre
+    image, // Assigne l'image
+    volume, // Assigne le volume
+    price, // Assigne le prix
+  };
+
+  drinks.push(newDrink); // Ajoute la nouvelle boisson au tableau des boissons
+  return res.json(newDrink); // Renvoie la nouvelle boisson en réponse au client
+});
+
+
+export default router; // export the router object

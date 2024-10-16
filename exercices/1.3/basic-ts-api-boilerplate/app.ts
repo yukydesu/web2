@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/film", filmRouter);
+app.use("/films", filmRouter);
 
 let counter: number = 0; // Initialise le compteur à 0
 // Définir la route pour l'index du site

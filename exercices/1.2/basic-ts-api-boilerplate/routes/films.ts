@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { Films } from "../types"; 
-
+import { Films } from "../types";
 
 const router = Router();
 
@@ -13,9 +12,10 @@ const films: Films[] = [
     director: "Lana Wachowski, Lilly Wachowski",
     duration: 136,
     budget: 63000000,
-    description: "A hacker learns about the true nature of his reality and his role in the war against its controllers.",
+    description:
+      "A hacker learns about the true nature of his reality and his role in the war against its controllers.",
     imageUrl: "https://example.com/matrix.jpg",
-    getDescription: function() {
+    getDescription: function () {
       return `Film: ${this.title}, directed by ${this.director}, lasts ${this.duration} minutes.`;
     },
   },
@@ -25,9 +25,10 @@ const films: Films[] = [
     director: "Christopher Nolan",
     duration: 148,
     budget: undefined,
-    description: "A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+    description:
+      "A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
     imageUrl: "https://example.com/inception.jpg",
-    getDescription: function() {
+    getDescription: function () {
       return `Film: ${this.title}, directed by ${this.director}, lasts ${this.duration} minutes.`;
     },
   },
@@ -39,10 +40,10 @@ const films: Films[] = [
     budget: 165000000,
     description: undefined,
     imageUrl: undefined,
-    getDescription: function() {
+    getDescription: function () {
       return `Film: ${this.title}, directed by ${this.director}, lasts ${this.duration} minutes.`;
     },
-  }
+  },
 ];
 
 router.get("/", (_req, res) => {

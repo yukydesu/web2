@@ -12,5 +12,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/users", usersRouter);
 app.use("/pizzas", pizzaRouter);
 app.use("/drinks", drinkRouter);
+app.use(express.json());
+
 
 export default app;
