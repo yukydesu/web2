@@ -91,6 +91,24 @@ router.get("/", (req, res) => {
 
   }
 
+  // Pagination
+
+  // Si le paramètre "page" et le paramètre "limit" sont présents
+  if (req.query["page"] && req.query["limit"]) {
+    const page: number = parseInt(req.query["page"] as string, 10); // Récupérer la valeur du paramètre "page" et la convertir en nombre
+    const limit: number = parseInt(req.query["limit"] as string, 10); // Récupérer la valeur du paramètre "limit" et la convertir en nombre
+
+    // Calculer l'index de début
+    const startIndex: number = (page - 1) * limit;
+    // Calculer l'index de fin
+    const endIndex: number = page * limit;
+
+    // Récupérer les films de la page actuelle
+    const paginatedFilms: Films[] = films.slice(startIndex, endIndex);
+
+    return res.json(paginatedFilms); // Retourner les films de la page actuelle
+  }
+
   // Si aucun paramètre n'est présent
   return res.json(films); // Retourner tous les films
 

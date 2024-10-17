@@ -19,6 +19,12 @@ GET {{baseUrl}}/films?sort-by=duration
 ### Get films sorted by budget in ascending order
 GET {{baseUrl}}/films?sort-by=budget
 
+### Get paginated films (page 1, 10 films per page)
+GET {{baseUrl}}/films?page=1&limit=10
+
+### Get paginated films (page 2, 5 films per page)
+GET {{baseUrl}}/films?page=2&limit=5
+
 ### Add a new film
 POST {{baseUrl}}/films
 Content-Type: application/json
