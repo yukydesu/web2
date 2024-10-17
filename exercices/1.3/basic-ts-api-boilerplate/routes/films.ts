@@ -51,16 +51,52 @@ router.get("/", (req, res) => {
   console.log(`GET /films : ${counter}`);
 
   // Si le paramètre "minimum-duration" est présent
-  if (!req.query["minimum-duration"]) {
-    return res.json(films); // Retourner tous les films
+  if (req.query["minimum-duration"]) {
+    const minimumDuration: number = parseInt(req.query["minimum-duration"] as string, 10); // Récupérer la valeur du paramètre "minimum-duration" et la convertir en nombre
+    // "as string" sert à dire à TypeScript que le paramètre est bien une chaîne de caractères
+    const filteredFilms: Films[] = films.filter((film) => film.duration >= minimumDuration); // Filtrer les films dont la durée est supérieure ou égale à la durée minimale
+    // le parametre "film" est un objet de type Films qui se trouve dans le tableau films
+    return res.json(filteredFilms); // Retourner les films filtrés
   }
 
-  const minimumDuration: number = parseInt(req.query["minimum-duration"] as string, 10); // Récupérer la valeur du paramètre "minimum-duration" et la convertir en nombre
-  // "as string" sert à dire à TypeScript que le paramètre est bien une chaîne de caractères
-  const filteredFilms: Films[] = films.filter((film) => film.duration >= minimumDuration); // Filtrer les films dont la durée est supérieure ou égale à la durée minimale
-  // le parametre "film" est un objet de type Films qui se trouve dans le tableau films
-  return res.json(filteredFilms); // Retourner les films filtrés
+  // Si le paramètre "title-starts-with" est présent
+  if (req.query["title-starts-with"]) {
+    const titleStartsWith: string = req.query["title-starts-with"] as string; // Récupérer la valeur du paramètre "title-starts-with"
+
+    // Filtrer les films dont le titre commence par la chaîne de caractères sans tenir compte de la casse
+    const filteredFilms: Films[] = films.filter((film) =>
+      film.title.toLowerCase().startsWith(titleStartsWith.toLowerCase()) 
+    );
+
+    return res.json(filteredFilms); // Retourner les films filtrés
+  }
+
+  if (req.query["sort-by"]) {
+    const sortBy: string = req.query["sort-by"] as string; // Récupérer la valeur du paramètre "sort-by"
+
+    // Trier les films selon le paramètre "sort-by"
+    const sortedFilms: Films[] = films.sort((a, b) => {
+      if (sortBy === "duration") {
+        return a.duration - b.duration;
+      }
+      
+      if (sortBy === "budget" && a.budget !== undefined && b.budget !== undefined) {
+        return a.budget - b.budget;
+      }
+      return a.title.localeCompare(b.title);
+    });
+
+    return res.json(sortedFilms); // Retourner les films triés
+
+
+  }
+
+  // Si aucun paramètre n'est présent
+  return res.json(films); // Retourner tous les films
+
 });
+
+
 
 router.get("/:id", (req, res) => {
   const id: number = parseInt(req.params.id); // Récupérer l'ID du film à afficher
@@ -72,6 +108,7 @@ router.get("/:id", (req, res) => {
   }
   return res.json(foundedFilm); // Retourner le film trouvé en json
 });
+
 
 router.post("/", (req, res) => { // Ajouter un film
   // Récupérer les données du film à ajouter

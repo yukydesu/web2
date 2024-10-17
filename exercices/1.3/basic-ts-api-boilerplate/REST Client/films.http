@@ -10,6 +10,15 @@ GET {{baseUrl}}/films?minimum-duration=150
 ### Get film by ID
 GET {{baseUrl}}/films/3
 
+### Get films with title starting with a specific string
+GET {{baseUrl}}/films?title-starts-with=i
+
+### Get films sorted by duration in descending order
+GET {{baseUrl}}/films?sort-by=duration
+
+### Get films sorted by budget in ascending order
+GET {{baseUrl}}/films?sort-by=budget
+
 ### Add a new film
 POST {{baseUrl}}/films
 Content-Type: application/json
