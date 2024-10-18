@@ -54,9 +54,20 @@ router.get("/", (req, res) => {
   if (req.query["minimum-duration"]) {
     const minimumDuration: number = parseInt(req.query["minimum-duration"] as string, 10); // Récupérer la valeur du paramètre "minimum-duration" et la convertir en nombre
     // "as string" sert à dire à TypeScript que le paramètre est bien une chaîne de caractères
+
+    // Vérifier que la valeur du paramètre "minimum-duration" est bien un nombre
+    if (isNaN(minimumDuration)) {
+      return res.status(400).json({ error: "Invalid data" }); // Retourner une erreur 400 si la valeur n'est pas un nombre
+    }
+
+    // Vérifier que la valeur du paramètre "minimum-duration" est bien supérieure à 0
+    if (minimumDuration <= 0) {
+      return res.status(400).json({ error: "Invalid data" }); // Retourner une erreur 400 si la valeur est inférieure ou égale à 0
+    }
+
     const filteredFilms: Films[] = films.filter((film) => film.duration >= minimumDuration); // Filtrer les films dont la durée est supérieure ou égale à la durée minimale
     // le parametre "film" est un objet de type Films qui se trouve dans le tableau films
-    return res.json(filteredFilms); // Retourner les films filtrés
+    return res.status(200).json(filteredFilms); // Retourner les films filtrés
   }
 
   // Si le paramètre "title-starts-with" est présent
@@ -68,25 +79,33 @@ router.get("/", (req, res) => {
       film.title.toLowerCase().startsWith(titleStartsWith.toLowerCase()) 
     );
 
-    return res.json(filteredFilms); // Retourner les films filtrés
+    return res.status(200).json(filteredFilms); // Retourner les films filtrés
   }
 
   if (req.query["sort-by"]) {
     const sortBy: string = req.query["sort-by"] as string; // Récupérer la valeur du paramètre "sort-by"
 
+    // Vérifier que le paramètre "sort-by" est bien "duration" ou "budget"
+    if (sortBy !== "duration" && sortBy !== "budget") {
+      return res.status(400).json({ error: "Invalid data" }); // Retourner une erreur 400 si le paramètre n'est pas "duration" ou "budget"
+    }
+
     // Trier les films selon le paramètre "sort-by"
     const sortedFilms: Films[] = films.sort((a, b) => {
-      if (sortBy === "duration") {
-        return a.duration - b.duration;
+
+      if (sortBy === "duration") { // Si le paramètre est "duration"
+        return a.duration - b.duration; // Trier les films par durée
       }
       
-      if (sortBy === "budget" && a.budget !== undefined && b.budget !== undefined) {
-        return a.budget - b.budget;
-      }
-      return a.title.localeCompare(b.title);
-    });
+      // Pas besoin d'un deuxieme if car on a déjà vérifié que le paramètre est soit "duration" soit "budget"
+      // Si le paramètre est "budget"
+      const budgetA = a.budget !== undefined ? a.budget : 0; // Utiliser une valeur par défaut si le budget n'est pas défini
+      const budgetB = b.budget !== undefined ? b.budget : 0; // Utiliser une valeur par défaut si le budget n'est pas défini
+      return budgetA - budgetB; // Trier les films par budget
 
-    return res.json(sortedFilms); // Retourner les films triés
+    }); 
+
+    return res.status(200).json(sortedFilms); // Retourner les films triés
 
 
   }
@@ -98,6 +117,16 @@ router.get("/", (req, res) => {
     const page: number = parseInt(req.query["page"] as string, 10); // Récupérer la valeur du paramètre "page" et la convertir en nombre
     const limit: number = parseInt(req.query["limit"] as string, 10); // Récupérer la valeur du paramètre "limit" et la convertir en nombre
 
+    // Vérifier que les valeurs des paramètres "page" et "limit" sont bien des nombres
+    if (isNaN(page) || isNaN(limit)) {
+      return res.status(400).json({ error: "Invalid data" }); // Retourner une erreur 400 si les valeurs ne sont pas des nombres
+    }
+
+    // Vérifier que les valeurs des paramètres "page" et "limit" sont bien supérieures à 0
+    if (page <= 0 || limit <= 0) {
+      return res.status(400).json({ error: "Invalid data" }); // Retourner une erreur 400 si les valeurs sont inférieures ou égales à 0
+    }
+
     // Calculer l'index de début
     const startIndex: number = (page - 1) * limit;
     // Calculer l'index de fin
@@ -106,11 +135,11 @@ router.get("/", (req, res) => {
     // Récupérer les films de la page actuelle
     const paginatedFilms: Films[] = films.slice(startIndex, endIndex);
 
-    return res.json(paginatedFilms); // Retourner les films de la page actuelle
+    return res.status(200).json(paginatedFilms); // Retourner les films de la page actuelle
   }
 
   // Si aucun paramètre n'est présent
-  return res.json(films); // Retourner tous les films
+  return res.status(200).json(films); // Retourner tous les films
 
 
 });
@@ -125,7 +154,7 @@ router.get("/:id", (req, res) => {
   if (!foundedFilm) {
     return res.status(404).json({ error: "Film not found" }); // Retourner une erreur 404 si le film n'est pas trouvé
   }
-  return res.json(foundedFilm); // Retourner le film trouvé en json
+  return res.status(200).json(foundedFilm); // Retourner le film trouvé en json
 });
 
 
@@ -168,6 +197,11 @@ router.post("/", (req, res) => { // Ajouter un film
     return res.status(400).json({ error: "Format error" }); // Retourner une erreur 400 si les données ne sont pas au bon format
   }
 
+  // Vérifier si le film existe déjà
+  if (films.find((film) => film.title === body.title)) {
+    return res.status(400).json({ error: "Film already exists" }); // Retourner une erreur 400 si le film existe déjà
+  }
+
   // Déstructurer les données du film
   const { title, director, duration, budget, description, imageUrl } = body as Films;
 
@@ -192,7 +226,7 @@ router.post("/", (req, res) => { // Ajouter un film
   films.push(newFilm);
 
   // Retourner le film ajouté
-  return res.status(201).json(newFilm); // .status(201) pour dire que la ressource a bien été créée
+  return res.status(200).json(newFilm); // Retourner le film ajouté
 
 });
 
