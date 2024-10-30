@@ -1,0 +1,63 @@
+
+@baseUrl = http://localhost:3000
+
+### Get all films
+GET {{baseUrl}}/films
+
+### Get films with budget filter
+GET {{baseUrl}}/films?minimum-duration=150
+
+### Get film by ID
+GET {{baseUrl}}/films/3
+
+### Get films with title starting with a specific string
+GET {{baseUrl}}/films?title-starts-with=i
+
+### Get films sorted by duration in descending order
+GET {{baseUrl}}/films?sort-by=duration
+
+### Get films sorted by budget in ascending order
+GET {{baseUrl}}/films?sort-by=budget
+
+### Get paginated films (page 1, 10 films per page)
+GET {{baseUrl}}/films?page=1&limit=10
+
+### Get paginated films (page 2, 5 films per page)
+GET {{baseUrl}}/films?page=2&limit=5
+
+### Add a new film
+POST {{baseUrl}}/films
+Content-Type: application/json
+
+{
+    "title": "New Film Title",
+    "director": "Director Name",
+    "duration": 120,
+    "budget": 100000000,
+    "description": "C'est l'histoire d'un film qui a été créé par un réalisateur très talentueux.",
+    "imageUrl": "https://www.google.com"
+}
+
+### Delete a film
+DELETE {{baseUrl}}/films/3
+
+### Update a film
+PATCH {{baseUrl}}/films/3
+Content-Type: application/json
+
+{
+    "title": "Updated Film Title"
+}
+
+### Remplace a film
+PUT {{baseUrl}}/films/3
+Content-Type: application/json
+
+{
+    "title": "Updated Film Title",
+    "director": "Updated Director Name",
+    "duration": 120,
+    "budget": 100000000,
+    "description": "C'est l'histoire d'un film qui a été créé par un réalisateur très talentueux.",
+    "imageUrl": "https://www.google.com"
+}
