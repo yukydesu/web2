@@ -1,12 +1,15 @@
 import { Router } from "express";
-import { Films } from "../types";
+import { Films, NewFilm } from "../types";
+import path from "node:path"; // import the path module from Node.js
+import { parse, serialize } from "../utils/json"; // import the parse function from utils/json.ts
+const jsonDbPath = path.join(__dirname, "/../data/films.json"); // Define the path to the JSON database file
 
 const router = Router();
 
 let counter: number = 0; // Initialise le compteur à 0
 
 // Tableau de films
-const films: Films[] = [
+const defaultFilms: Films[] = [
   {
     id: 1,
     title: "The Matrix",
@@ -51,6 +54,8 @@ const films: Films[] = [
 router.get("/", (req, res) => {
   counter++;
   console.log(`GET /films : ${counter}`);
+  
+  const films= parse(jsonDbPath, defaultFilms); // Parse the JSON database file
 
   // Si le paramètre "minimum-duration" est présent
   if (req.query["minimum-duration"]) {
@@ -69,6 +74,8 @@ router.get("/", (req, res) => {
 
     const filteredFilms: Films[] = films.filter((film) => film.duration >= minimumDuration); // Filtrer les films dont la durée est supérieure ou égale à la durée minimale
     // le parametre "film" est un objet de type Films qui se trouve dans le tableau films
+
+   
     return res.status(200).json(filteredFilms); // Retourner les films filtrés
   }
 
@@ -151,6 +158,8 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   const id: number = parseInt(req.params.id); // Récupérer l'ID du film à afficher
 
+  const films= parse(jsonDbPath, defaultFilms); // Parse the JSON database file
+
   const foundedFilm = films.find((film) => film.id === id); // Récupérer le film correspondant à l'ID
   // Vérifie si l'id se trouve dans le tableau films
   if (!foundedFilm) {
@@ -164,6 +173,8 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => { // Ajouter un film
   // Récupérer les données du film à ajouter
   const body: unknown = req.body;
+
+  const films= parse(jsonDbPath, defaultFilms); // Parse the JSON database file
 
   // Vérifier que les données sont bien envoyées
   if (!body) {
@@ -205,7 +216,7 @@ router.post("/", (req, res) => { // Ajouter un film
   }
 
   // Déstructurer les données du film
-  const { title, director, duration, budget, description, imageUrl } = body as Films;
+  const { title, director, duration, budget, description, imageUrl } = body as NewFilm;
 
   // Créer un nouvel ID pour le film
   const nextId: number = films.length + 1;
@@ -227,6 +238,9 @@ router.post("/", (req, res) => { // Ajouter un film
   // Ajouter le film au tableau
   films.push(newFilm);
 
+  // Serialize the films array to JSON and write it to the database file
+  serialize(jsonDbPath, films);
+
   // Retourner le film ajouté
   return res.status(200).json(newFilm); // Retourner le film ajouté
 
@@ -237,6 +251,8 @@ router.post("/", (req, res) => { // Ajouter un film
 router.delete("/:id", (req, res) => {
   const id: number = parseInt(req.params.id); // Récupérer l'ID du film à supprimer
 
+  const films= parse(jsonDbPath, defaultFilms); // Parse the JSON database file
+
   // Vérifier si le film existe
   const index: number = films.findIndex((film) => film.id === id); // Récupérer l'index du film à supprimer
   if (index === -1) {
@@ -245,6 +261,9 @@ router.delete("/:id", (req, res) => {
 
   // Supprimer le film du tableau et récupérer le film supprimé
   const deletedFilm: Films = films.splice(index, 1)[0]; // splice retourne un tableau, on prend le premier élément du tableau, [0] car on veut récupérer le film supprimé et non un tableau contenant le film supprimé
+
+  // Serialize the films array to JSON and write it to the database file
+  serialize(jsonDbPath, films);
 
   // Retourner le film supprimé
   return res.status(200).json(deletedFilm); // Retourner le film supprimé
@@ -256,6 +275,9 @@ router.patch("/:id", (req, res) => {
 
     // Récupérer l'ID du film à mettre à jour
     const id: number = parseInt(req.params.id);
+
+    // Récupérer les films
+    const films= parse(jsonDbPath, defaultFilms); // Parse the JSON database file
   
     // Récupérer les données du film à mettre à jour
     const film = films.find((film) => film.id === id);
@@ -287,7 +309,7 @@ router.patch("/:id", (req, res) => {
     }
   
     // Desctructurer les données du film
-    const { title, director, duration, budget, description, imageUrl } = body as Films;
+    const { title, director, duration, budget, description, imageUrl } = body as NewFilm;
   
     // Mettre à jour les informations du film si elles sont fournies
     if (title) {
@@ -309,6 +331,9 @@ router.patch("/:id", (req, res) => {
       film.imageUrl = imageUrl;
     }
   
+    // Serialize the films array to JSON and write it to the database file
+    serialize(jsonDbPath, films);
+
     // Retourner le film mis à jour
     return res.status(200).json(film);
 });
@@ -318,6 +343,9 @@ router.put("/:id", (req, res) => {
 
   // Récupérer l'ID du film à mettre à jour
   const id: number = parseInt(req.params.id);
+
+  // Récupérer les films
+  const films= parse(jsonDbPath, defaultFilms); // Parse the JSON database file
 
   // Récupérer les données du film à mettre à jour
   const film = films.find((film) => film.id === id);
@@ -344,7 +372,7 @@ router.put("/:id", (req, res) => {
   }
 
   // Desctructurer les données du film
-  const { title, director, duration, budget, description, imageUrl } = body as Films;
+  const { title, director, duration, budget, description, imageUrl } = body as NewFilm;
 
   // Si le film n'existe pas, créer un nouveau film
   if (!film) {
@@ -376,6 +404,9 @@ router.put("/:id", (req, res) => {
     // Ajouter le film au tableau
     films.push(newFilm);
 
+    // Serialize the films array to JSON and write it to the database file
+    serialize(jsonDbPath, films);
+
     // Retourner le film ajouté
     return res.status(200).json(newFilm);
   }
@@ -387,6 +418,9 @@ router.put("/:id", (req, res) => {
   film.budget = budget;
   film.description = description;
   film.imageUrl = imageUrl;
+
+  // Serialize the films array to JSON and write it to the database file
+  serialize(jsonDbPath, films);
 
   // Retourner le film mis à jour
   return res.status(200).json(film);

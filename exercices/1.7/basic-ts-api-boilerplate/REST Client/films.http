@@ -8,7 +8,7 @@ GET {{baseUrl}}/films
 GET {{baseUrl}}/films?minimum-duration=150
 
 ### Get film by ID
-GET {{baseUrl}}/films/3
+GET {{baseUrl}}/films/1
 
 ### Get films with title starting with a specific string
 GET {{baseUrl}}/films?title-starts-with=i
@@ -42,7 +42,7 @@ Content-Type: application/json
 DELETE {{baseUrl}}/films/3
 
 ### Update a film
-PATCH {{baseUrl}}/films/3
+PATCH {{baseUrl}}/films/2
 Content-Type: application/json
 
 {

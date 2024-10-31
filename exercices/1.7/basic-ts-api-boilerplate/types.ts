@@ -10,4 +10,6 @@ interface Films {
   getDescription: () => string;
 }
 
-export type {Films};
+type NewFilm = Omit<Films, 'id'>;
+
+export type {Films, NewFilm};
