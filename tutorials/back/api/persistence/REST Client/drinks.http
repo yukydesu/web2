@@ -1,0 +1,82 @@
+### Variables
+@baseUrl = http://localhost:3000
+
+### Read all drinks
+GET {{baseUrl}}/drinks
+
+
+### Read a single drink
+GET {{baseUrl}}/drinks/1
+
+### Read all drinks cheaper or equal to 3 €
+GET {{baseUrl}}/drinks/?budget-max=2.5
+
+
+### Create drink 1
+POST {{baseUrl}}/drinks
+Content-Type: application/json
+
+{
+    "title": "Coca-Cola",
+    "image": "https://example.com/coca-cola.jpg",
+    "volume": 0.33,
+    "price": 1.5
+}
+
+### Create drink 2
+POST {{baseUrl}}/drinks
+Content-Type: application/json
+
+{
+    "title": "Pepsi",
+    "image": "https://example.com/pepsi.jpg",
+    "volume": 0.33,
+    "price": 1.4
+}
+
+### Create drink 3
+POST {{baseUrl}}/drinks
+Content-Type: application/json
+
+{
+    "title": "Fanta",
+    "image": "https://example.com/fanta.jpg",
+    "volume": 0.33,
+    "price": 1.3
+}
+
+### Create drink 4
+POST {{baseUrl}}/drinks
+Content-Type: application/json
+
+{
+    "title": "Sprite",
+    "image": "https://example.com/sprite.jpg",
+    "volume": 0.33,
+    "price": 1.2
+}
+
+### Create drink 5
+POST {{baseUrl}}/drinks
+Content-Type: application/json
+
+{
+    "title": "Dr Pepper",
+    "image": "https://example.com/dr-pepper.jpg",
+    "volume": 0.33,
+    "price": 1.6
+}
+
+### Update a drink
+PATCH {{baseUrl}}/drinks/3
+Content-Type: application/json
+
+{
+    "title": "Pepsi",
+    "image": "https://example.com/pepsi.jpg",
+    "volume": 0.6,
+    "price": 2.49
+}
+
+### Delete a drink
+DELETE {{baseUrl}}/drinks/1
