@@ -10,6 +10,7 @@ import {
 
 const router = Router();
 
+// Récuperer toutes les boissons
 router.get("/", (req, res) => {
   const budgetMax = Number(req.query["budget-max"]);
   const drinks = readAllDrinks(budgetMax);
