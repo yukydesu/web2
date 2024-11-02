@@ -12,4 +12,12 @@ interface Films {
 
 type NewFilm = Omit<Films, 'id'>;
 
-export type {Films, NewFilm};
+interface Texts {
+  id : string;
+  content: string;
+  level: "easy" | "medium" | "hard";
+}
+
+type NewText = Omit<Texts, 'id'>;
+
+export type {Films, NewFilm, Texts, NewText};

@@ -1,0 +1,34 @@
+@baseUrl = http://localhost:3000
+
+### Récupérer tous les textes
+GET {{baseUrl}}/texts
+
+### Récupérer tous les textes avec un filtre de niveau
+GET {{baseUrl}}/texts?level=easy
+Content-Type: application/json
+
+### Récupérer un texte par ID
+GET {{baseUrl}}/texts/3667941d-9d2c-4762-8cc6-720ea250bd5a
+Content-Type: application/json
+
+### Créer un nouveau texte
+POST {{baseUrl}}/texts
+Content-Type: application/json
+
+{
+  "content": "Nouveau texte",
+  "level": "medium"
+}
+
+### Mettre à jour un texte par ID
+PUT {{baseUrl}}/texts/3667941d-9d2c-4762-8cc6-720ea250bd5a
+Content-Type: application/json
+
+{
+  "content": "Texte mis à jour",
+  "level": "hard"
+}
+
+### Supprimer un texte par ID
+DELETE {{baseUrl}}/texts/3667941d-9d2c-4762-8cc6-720ea250bd5a
+Content-Type: application/json
