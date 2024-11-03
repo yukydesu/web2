@@ -1,0 +1,10 @@
+tr{
+    border: 1px solid red;
+
+}
+
+td{
+    border: 1px solid blue;
+    width:250px;
+    text-align: center;
+}

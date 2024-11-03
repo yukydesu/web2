@@ -1,3 +1,5 @@
+import "./Movie.css"
+
 interface MovieProps {
     title: string;
     director: string;
@@ -7,12 +9,14 @@ interface MovieProps {
 
 const Movie = (props: MovieProps) => {
     return (
-        <div className="movie">
-        <h3>{props.title}</h3>
-        <p>{props.director}</p>
-        <img src={props.image} alt={props.title} className="movie-image" width="50"/>
-        {props.children}
-        </div>
+        
+        <tr className="movie-tr">
+            <td>{props.title}</td>
+            <td>{props.director}</td>
+            <td><img src={props.image} alt={props.title} className="movie-image" width="50"/></td>
+            <td>{props.children}</td>
+        </tr>
+
     );
 }
 
