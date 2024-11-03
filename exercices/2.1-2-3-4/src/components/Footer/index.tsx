@@ -4,7 +4,7 @@ import "./Footer.css";
 const Footer = () => {
     return (
       <footer>
-        <h1 className="title-footer">Footer</h1>
+        <h1 className="title-footer">Kyllian Delbauche</h1>
       </footer>
     );
   };
