@@ -16,7 +16,7 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <ClickCounter title="You are a master in the art of clicking !" />
+      <ClickCounter title="You are a master in the art of clicking !" hoverMessage="Please click on me now !"/>
       <h1>Vite + React</h1>
       <p>
         Edit <code>src/App.tsx</code> and save to test HMR
