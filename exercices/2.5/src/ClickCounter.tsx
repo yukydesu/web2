@@ -21,14 +21,14 @@ const ClickCounter = ({ title, hoverMessage }: ClickCounterProps) => {
     setShowHoverMessage(false);
   };
 
-  title = "You are a master in the art of clicking !";
-
   return (
     <>
       <button onClick={handleClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         count is {count}
       </button>
-      <p>{showHoverMessage ? `${hoverMessage}` : null}</p>
+      <div>
+        <p>{showHoverMessage ? `${hoverMessage}` : "______"}</p>
+      </div>
       <p>
         {count >= 10 && <p>{title}</p>}
         {count >= 10 && <p>SUCCESS :</p>}
